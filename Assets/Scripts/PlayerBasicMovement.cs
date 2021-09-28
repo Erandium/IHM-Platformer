@@ -6,36 +6,56 @@ public class PlayerBasicMovement : MonoBehaviour
 {
     [SerializeField] float maxSpeed;
     [SerializeField] float gravity;
-    [SerializeField] float jumpImpulse;
+    [SerializeField] float jumpSpeed;
+    [SerializeField] float airControlFactor;
+    [SerializeField] float horizontalJumpSpeed;
+    [SerializeField] float horizontalJumpVerticalFactor;
 
     private BoxCollider2D playerCollider;
-    private Vector2 speed;
+    public Vector2 speed;
 
-    // Start is called before the first frame update
+    private bool canJump;
+    private int isAgainstWall;
+    
     void Start()
     {
         playerCollider = GetComponent<BoxCollider2D>();
-
+        speed = new Vector2(0, 0);
+        canJump = true;
+        isAgainstWall = 0;
     }
 
     // Update is called once per frame
     void Update()
     {
         Vector2 acceleration = new Vector2(0, -gravity);
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            acceleration.y = jumpImpulse;
-        }
 
         float horizontalMovement = Input.GetAxis("Horizontal");
+        if (!canJump)
+        {
+            horizontalMovement *= airControlFactor;
+        }
 
         speed.x = horizontalMovement * maxSpeed;
-        speed += acceleration * Time.deltaTime;
+        if (canJump && Input.GetKeyDown(KeyCode.Space))
+        {
+            speed.y = jumpSpeed;
+            if(isAgainstWall!=0)
+            {
+                speed.y *= horizontalJumpVerticalFactor;
+                speed.x = horizontalJumpSpeed*isAgainstWall;
+                print(isAgainstWall);
+                print(speed);
+            }
+           
+           // speed.x = horizontalJumpSpeed*isAgainstWall;
+            canJump = false;   
+        }
 
+        speed += acceleration * Time.deltaTime;
         
 
-
-
+        
         Vector2 deltaMouvement = speed * Time.deltaTime;
 
         if (!CanMoveHorizontaly(deltaMouvement))
@@ -62,9 +82,24 @@ public class PlayerBasicMovement : MonoBehaviour
         ContactFilter2D contactFilter = new ContactFilter2D();
 
         playerCollider.offset = new Vector2(deltaMouvement.x, 0);
-        playerCollider.size = new Vector2(1, 0.9f);
+        playerCollider.size = new Vector2(1, 1);
 
         int a = playerCollider.OverlapCollider(contactFilter, wallColliders);
+
+        isAgainstWall = 0;
+        for(int i=0; i<a; i++)
+        {
+            if(wallColliders[i].transform.position.x < transform.position.x)
+            {
+                isAgainstWall = 1;
+            }
+            else
+            {
+                isAgainstWall = -1;
+            }
+            canJump = true;
+        }
+       
 
         return (a == 0);
     }
@@ -75,10 +110,17 @@ public class PlayerBasicMovement : MonoBehaviour
         ContactFilter2D contactFilter = new ContactFilter2D();
 
         playerCollider.offset = new Vector2(0, deltaMouvement.y);
-        playerCollider.size = new Vector2(0.9f, 1);
+        playerCollider.size = new Vector2(1f, 1);
 
         int a = playerCollider.OverlapCollider(contactFilter, wallColliders);
-
+        
+        for(int i = 0; i < a; i++)
+        {
+            if (wallColliders[i].transform.position.y < transform.position.y)
+            {
+                canJump = true;
+            }
+        }
         return (a == 0);
     }
 }
