@@ -413,6 +413,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gravityAcceleration: 10
   detectionMargin: 0.05
+  frictionAdjustementFactor: 1
   mass: 1
   horizontalForce: 10
   horizontalMaxSpeed: 5

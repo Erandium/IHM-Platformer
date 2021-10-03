@@ -6,6 +6,7 @@ public class PlayerControler : MonoBehaviour
 {
     [SerializeField] private float gravityAcceleration;
     [SerializeField] private float detectionMargin;
+    [SerializeField] private float frictionAdjustementFactor;
 
     [SerializeField] private float mass;
     [SerializeField] private float horizontalForce;
@@ -52,12 +53,12 @@ public class PlayerControler : MonoBehaviour
 
             if (isOnGroud)
             {
-                acceleration.x += -(platformFrictionCoeff * speed.x / mass);
+                acceleration.x += -(platformFrictionCoeff * frictionAdjustementFactor * speed.x / mass);
                 acceleration.y = 0;
             }
             else if (isOnWall)
             {
-                acceleration.y *= -(platformFrictionCoeff * speed.y / mass);
+                acceleration.y *= -(platformFrictionCoeff * frictionAdjustementFactor * speed.y / mass);
             }
             else
             {
