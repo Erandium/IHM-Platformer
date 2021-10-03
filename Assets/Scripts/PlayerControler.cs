@@ -14,11 +14,11 @@ public class PlayerControler : MonoBehaviour
     [SerializeField] private float jumpSpeed;
     [SerializeField] private float wallJumpAngleDeg;
 
-    private bool isOnGroud;
-    private float platformFrictionCoeff;
-    private bool isOnWall;
-    private int wallDirection;
-    private int nbJump;
+    public bool isOnGroud;
+    public float platformFrictionCoeff;
+    public bool isOnWall;
+    public int wallDirection;
+    public int nbJump;
 
     private Vector2 speed;
 
@@ -31,7 +31,7 @@ public class PlayerControler : MonoBehaviour
         speed = new Vector2(0, 0);
 
         isOnGroud = false;
-        platformFrictionCoeff = 0.5f;
+        platformFrictionCoeff = 1f;
         isOnWall = false;
         wallDirection = 0;
         nbJump = 0;
@@ -84,6 +84,7 @@ public class PlayerControler : MonoBehaviour
             if(isOnWall)
             {
                 speed.x = jumpSpeed * Mathf.Cos(Mathf.Deg2Rad * wallJumpAngleDeg) * wallDirection;
+                
                 speed.y = jumpSpeed * Mathf.Sin(Mathf.Deg2Rad * wallJumpAngleDeg);
             }
             else
@@ -148,8 +149,9 @@ public class PlayerControler : MonoBehaviour
         Collider2D[] platformColliders = new Collider2D[5];
         ContactFilter2D contactFilter = new ContactFilter2D();
 
+        playerCollider.size = new Vector2(0.5f  , 1f);
         playerCollider.offset = new Vector2(0, -detectionMargin);
-        playerCollider.size = new Vector2(1, 0.8f);
+        
 
         int a = playerCollider.OverlapCollider(contactFilter, platformColliders);
 
@@ -172,42 +174,38 @@ public class PlayerControler : MonoBehaviour
         Collider2D[] platformColliders = new Collider2D[5];
         ContactFilter2D contactFilter = new ContactFilter2D();
 
-        playerCollider.size = new Vector2(0.8f, 1);
+        playerCollider.size = new Vector2(1f, 0.5f);
 
         // check left
         playerCollider.offset = new Vector2(- detectionMargin, 0);
 
         int a = playerCollider.OverlapCollider(contactFilter, platformColliders);
 
+        //check right
+        playerCollider.offset = new Vector2(detectionMargin, 0);
+
+        int b= playerCollider.OverlapCollider(contactFilter, platformColliders);
+
         if (a > 0)
         {
+            print("gné");
             isOnWall = true;
             nbJump = 2;
             wallDirection = 1;
             //get friction factor
         }
-        else
-        {
-            isOnWall = false;
-            wallDirection = 0;
-        }
-
-        //check right
-        playerCollider.offset = new Vector2(detectionMargin, 0);
-
-        a = playerCollider.OverlapCollider(contactFilter, platformColliders);
-
-        if (a > 0)
+        else if (b > 0)
         {
             isOnWall = true;
             nbJump = 2;
             wallDirection = -1;
-            //get friction factor
         }
         else
         {
+            print("not gné");
             isOnWall = false;
             wallDirection = 0;
+         
         }
     }
 }

@@ -417,8 +417,13 @@ MonoBehaviour:
   horizontalForce: 10
   horizontalMaxSpeed: 5
   airControlFactor: 1
-  jumpSpeed: 5
+  jumpSpeed: 10
   wallJumpAngleDeg: 45
+  isOnGroud: 0
+  platformFrictionCoeff: 0
+  isOnWall: 0
+  wallDirection: 0
+  nbJump: 0
 --- !u!61 &908212521
 BoxCollider2D:
   m_ObjectHideFlags: 0
