@@ -5,4 +5,5 @@ using UnityEngine;
 public class PlatformData : MonoBehaviour
 {
     [SerializeField] public float frictionFactor;
+    [SerializeField] public bool isTraversable;
 }

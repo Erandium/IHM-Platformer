@@ -15,11 +15,11 @@ public class PlayerControler : MonoBehaviour
     [SerializeField] private float jumpSpeed;
     [SerializeField] private float wallJumpAngleDeg;
 
-    public bool isOnGroud;
-    public float platformFrictionCoeff;
-    public bool isOnWall;
-    public int wallDirection;
-    public int nbJump;
+    private bool isOnGroud;
+    private float platformFrictionCoeff;
+    private bool isOnWall;
+    private int wallDirection;
+    private int nbJump;
 
     private Vector2 speed;
 
@@ -158,13 +158,11 @@ public class PlayerControler : MonoBehaviour
 
         int a = playerCollider.OverlapCollider(contactFilter, platformColliders);
 
-        print(a);
-
         if (a > 0)
         {
             isOnGroud = true;
             nbJump = 2;
-            //get friction factor
+            platformFrictionCoeff = platformColliders[a - 1].gameObject.GetComponent<PlatformData>().frictionFactor;
         }
         else
         {
@@ -174,7 +172,8 @@ public class PlayerControler : MonoBehaviour
 
     private void CheckWalls()
     {
-        Collider2D[] platformColliders = new Collider2D[5];
+        Collider2D[] platformCollidersLeft = new Collider2D[5];
+        Collider2D[] platformCollidersRight = new Collider2D[5];
         ContactFilter2D contactFilter = new ContactFilter2D();
 
         playerCollider.size = new Vector2(1f, 0.5f);
@@ -182,30 +181,29 @@ public class PlayerControler : MonoBehaviour
         // check left
         playerCollider.offset = new Vector2(- detectionMargin, 0);
 
-        int a = playerCollider.OverlapCollider(contactFilter, platformColliders);
+        int left = playerCollider.OverlapCollider(contactFilter, platformCollidersLeft);
 
         //check right
         playerCollider.offset = new Vector2(detectionMargin, 0);
 
-        int b= playerCollider.OverlapCollider(contactFilter, platformColliders);
+        int right = playerCollider.OverlapCollider(contactFilter, platformCollidersRight);
 
-        if (a > 0)
+        if (left > 0)
         {
-            print("gné");
             isOnWall = true;
             nbJump = 2;
             wallDirection = 1;
-            //get friction factor
+            platformFrictionCoeff = platformCollidersLeft[left - 1].gameObject.GetComponent<PlatformData>().frictionFactor;
         }
-        else if (b > 0)
+        else if (right > 0)
         {
             isOnWall = true;
             nbJump = 2;
             wallDirection = -1;
+            platformFrictionCoeff = platformCollidersRight[right - 1].gameObject.GetComponent<PlatformData>().frictionFactor;
         }
         else
         {
-            print("not gné");
             isOnWall = false;
             wallDirection = 0;
          
