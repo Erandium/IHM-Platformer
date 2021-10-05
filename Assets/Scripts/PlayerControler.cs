@@ -24,6 +24,7 @@ public class PlayerControler : MonoBehaviour
     private int nbJump;
     private bool isInPlatform;
     private float horizontalMaxSpeed;
+    private bool isDashing;
 
     private bool isJumpButtonHold = false;
 
@@ -56,72 +57,88 @@ public class PlayerControler : MonoBehaviour
         {
             horizontalMaxSpeed = walkMaxSpeed;
         }
-
-
-        if (mass == 0)
+        if (Input.GetAxis("Dash")>0.5f)
         {
-            speed.y -= gravityAcceleration * Time.deltaTime;
-            speed.x = Input.GetAxis("Horizontal") * horizontalMaxSpeed;
+            isDashing = true;
+        }
+
+        else
+        {
+            isDashing = false;
+        }
+        if (isDashing)
+        {
+            speed.x = dashDistance;
         }
         else
         {
-            Vector2 acceleration = new Vector2(Input.GetAxis("Horizontal") * (horizontalForce / mass), -gravityAcceleration);
 
-            if (isOnGround)
+
+            if (mass == 0)
             {
-                acceleration.x += -(platformFrictionCoeff * frictionAdjustementFactor * speed.x / mass);
-                acceleration.y = 0;
-            }
-            else if (isOnWall)
-            {
-                acceleration.y +=  -(platformFrictionCoeff * frictionAdjustementFactor * speed.y / mass);
+                speed.y -= gravityAcceleration * Time.deltaTime;
+                speed.x = Input.GetAxis("Horizontal") * horizontalMaxSpeed;
             }
             else
             {
-                acceleration.x *= airControlFactor;
-            }
+                Vector2 acceleration = new Vector2(Input.GetAxis("Horizontal") * (horizontalForce / mass), -gravityAcceleration);
 
-
-            speed += acceleration * Time.deltaTime;
-
-            if (isOnGround)
-            {
-                speed.x = Mathf.Clamp(speed.x, -horizontalMaxSpeed, horizontalMaxSpeed);
-            }
-            else
-            {
-                speed.x = Mathf.Clamp(speed.x, -horizontalMaxSpeed * airControlFactor, horizontalMaxSpeed * airControlFactor);
-            }
-            
-        }
-
-        //jump
-        if (nbJump > 0 && Input.GetAxis("Jump") > 0.5f)
-        {
-            if (!isJumpButtonHold)
-            {
-                if (isOnWall && !isOnGround)
+                if (isOnGround)
                 {
-                    speed.x = jumpSpeed * Mathf.Cos(Mathf.Deg2Rad * wallJumpAngleDeg) * wallDirection;
-
-                    speed.y = jumpSpeed * Mathf.Sin(Mathf.Deg2Rad * wallJumpAngleDeg);
+                    acceleration.x += -(platformFrictionCoeff * frictionAdjustementFactor * speed.x / mass);
+                    acceleration.y = 0;
+                }
+                else if (isOnWall)
+                {
+                    acceleration.y += -(platformFrictionCoeff * frictionAdjustementFactor * speed.y / mass);
                 }
                 else
                 {
-                    speed.y = jumpSpeed;
+                    acceleration.x *= airControlFactor;
                 }
 
-                nbJump--;
-                isJumpButtonHold = true;
+
+                speed += acceleration * Time.deltaTime;
+
+                if (isOnGround)
+                {
+                    speed.x = Mathf.Clamp(speed.x, -horizontalMaxSpeed, horizontalMaxSpeed);
+                }
+                else
+                {
+                    speed.x = Mathf.Clamp(speed.x, -horizontalMaxSpeed * airControlFactor, horizontalMaxSpeed * airControlFactor);
+                }
+
             }
-            
-        }
 
-        else
-        {
-            isJumpButtonHold = false;
-        }
+            //jump
+            if (nbJump > 0 && Input.GetAxis("Jump") > 0.5f)
+            {
+                if (!isJumpButtonHold)
+                {
+                    if (isOnWall && !isOnGround)
+                    {
+                        speed.x = jumpSpeed * Mathf.Cos(Mathf.Deg2Rad * wallJumpAngleDeg) * wallDirection;
 
+                        speed.y = jumpSpeed * Mathf.Sin(Mathf.Deg2Rad * wallJumpAngleDeg);
+                    }
+                    else
+                    {
+                        speed.y = jumpSpeed;
+                    }
+
+                    nbJump--;
+                    isJumpButtonHold = true;
+                }
+
+            }
+
+            else
+            {
+                isJumpButtonHold = false;
+            }
+
+        }
 
         Vector2 deltaMovement = speed * Time.deltaTime;
 
