@@ -24,7 +24,7 @@ public class PlayerControler : MonoBehaviour
     private int nbJump;
     private bool isInPlatform;
     private float horizontalMaxSpeed;
-    private bool isDashing;
+    //private bool isDashing;
 
     private bool isJumpButtonHold;
 
@@ -60,21 +60,8 @@ public class PlayerControler : MonoBehaviour
         {
             horizontalMaxSpeed = walkMaxSpeed;
         }
-        if (Input.GetAxis("Dash")>0.5f)
-        {
-            isDashing = true;
-        }
-
-        else
-        {
-            isDashing = false;
-        }
-        if (isDashing)
-        {
-            speed.x = dashDistance;
-        }
-        else
-        {
+      
+        
 
 
             if (mass == 0)
@@ -141,13 +128,12 @@ public class PlayerControler : MonoBehaviour
                 isJumpButtonHold = false;
             }
 
-        }
+        
 
         Vector2 deltaMovement = speed * Time.deltaTime;
-
+        deltaMovement += movementBuffer;
         Vector2 newPosition = ProcessColisions(deltaMovement);
 
-        newPosition += movementBuffer;
         movementBuffer = Vector2.zero;
 
         transform.position = new Vector3(newPosition.x, newPosition.y, 0);

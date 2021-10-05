@@ -42,7 +42,7 @@ public class MovingPlatform : MonoBehaviour
                 {
                     movement.y += upMovementExtra;
                 }
-                player.SetMovementBuffer(movement);
+                player.SetMovementBuffer(currentPos - previousPos);
             }
         }
 
