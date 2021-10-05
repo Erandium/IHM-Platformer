@@ -115,7 +115,7 @@ public class PlayerControler : MonoBehaviour
         ContactFilter2D contactFilter = new ContactFilter2D();
 
         playerCollider.offset = new Vector2(deltaMovement.x, 0);
-        playerCollider.size = Vector2.one;
+        playerCollider.size = new Vector2(1f, 0.95f);
 
         int a = playerCollider.OverlapCollider(contactFilter, platformColliders);
 
@@ -126,16 +126,18 @@ public class PlayerControler : MonoBehaviour
         }
 
         playerCollider.offset = new Vector2(0, deltaMovement.y);
+        playerCollider.size = new Vector2(0.95f, 1f);
 
-        a = playerCollider.OverlapCollider(contactFilter, platformColliders);
+        int b = playerCollider.OverlapCollider(contactFilter, platformColliders);
 
-        if (a > 0)
+        if (b > 0)
         {
 
             if (deltaMovement.y < 0)
             {
                 isOnGroud = true;
             }
+            print("duh");
             deltaMovement.y = 0;
             speed.y = 0;
         }
