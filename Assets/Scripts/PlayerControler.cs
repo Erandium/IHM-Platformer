@@ -10,10 +10,12 @@ public class PlayerControler : MonoBehaviour
 
     [SerializeField] private float mass;
     [SerializeField] private float horizontalForce;
-    [SerializeField] private float horizontalMaxSpeed;
+    [SerializeField] private float walkMaxSpeed;
+    [SerializeField] private float sprintMaxSpeed;
     [SerializeField] private float airControlFactor;
     [SerializeField] private float jumpSpeed;
     [SerializeField] private float wallJumpAngleDeg;
+    [SerializeField] private float dashDistance;
 
     private bool isOnGroud;
     private float platformFrictionCoeff;
@@ -21,6 +23,7 @@ public class PlayerControler : MonoBehaviour
     private int wallDirection;
     private int nbJump;
     private bool isInPlatform;
+    private float horizontalMaxSpeed;
 
     private Vector2 speed;
 
@@ -42,6 +45,16 @@ public class PlayerControler : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
+        if (Input.GetAxis("Sprint") > 0.5f)
+        {
+            horizontalMaxSpeed = sprintMaxSpeed;
+        }
+        else
+        {
+            horizontalMaxSpeed = walkMaxSpeed;
+        }
+
 
         if (mass == 0)
         {
