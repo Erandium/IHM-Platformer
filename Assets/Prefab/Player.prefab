@@ -96,6 +96,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 61b7d5a38162fdc41970fba3bb212006, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gravityAcceleration: 10
+  detectionMargin: 0.01
+  frictionAdjustementFactor: 1
+  mass: 1
+  horizontalForce: 10
+  horizontalMaxSpeed: 5
+  airControlFactor: 1
+  jumpSpeed: 10
+  wallJumpAngleDeg: 45
+  isOnGroud: 0
+  platformFrictionCoeff: 0
+  isOnWall: 0
+  wallDirection: 0
+  nbJump: 0
 --- !u!61 &4203185047826280149
 BoxCollider2D:
   m_ObjectHideFlags: 0
