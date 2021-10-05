@@ -101,15 +101,12 @@ MonoBehaviour:
   frictionAdjustementFactor: 1
   mass: 1
   horizontalForce: 10
-  horizontalMaxSpeed: 5
+  walkMaxSpeed: 5
+  sprintMaxSpeed: 8
   airControlFactor: 1
   jumpSpeed: 10
   wallJumpAngleDeg: 45
-  isOnGroud: 0
-  platformFrictionCoeff: 0
-  isOnWall: 0
-  wallDirection: 0
-  nbJump: 0
+  dashDistance: 0
 --- !u!61 &4203185047826280149
 BoxCollider2D:
   m_ObjectHideFlags: 0

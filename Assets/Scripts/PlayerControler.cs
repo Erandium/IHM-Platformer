@@ -25,6 +25,8 @@ public class PlayerControler : MonoBehaviour
     private bool isInPlatform;
     private float horizontalMaxSpeed;
 
+    private bool isJumpButtonHold = false;
+
     private Vector2 speed;
 
     private BoxCollider2D playerCollider;
@@ -94,20 +96,28 @@ public class PlayerControler : MonoBehaviour
         }
 
         //jump
-        if (nbJump > 0 && Input.GetAxis("Jump") > 0)
+        if (nbJump > 0 && Input.GetAxis("Jump") > 0.5f)
         {
-            if(isOnWall && !isOnGroud)
+            if (!isJumpButtonHold)
             {
-                speed.x = jumpSpeed * Mathf.Cos(Mathf.Deg2Rad * wallJumpAngleDeg) * wallDirection;
-                
-                speed.y = jumpSpeed * Mathf.Sin(Mathf.Deg2Rad * wallJumpAngleDeg);
+                if (isOnWall && !isOnGroud)
+                {
+                    speed.x = jumpSpeed * Mathf.Cos(Mathf.Deg2Rad * wallJumpAngleDeg) * wallDirection;
+
+                    speed.y = jumpSpeed * Mathf.Sin(Mathf.Deg2Rad * wallJumpAngleDeg);
+                }
+                else
+                {
+                    speed.y = jumpSpeed;
+                }
+
+                nbJump--;
+                isJumpButtonHold = true;
             }
             else
             {
-                speed.y = jumpSpeed;
+                isJumpButtonHold = false;
             }
-
-            nbJump--;
         }
 
 
