@@ -26,9 +26,10 @@ public class PlayerControler : MonoBehaviour
     private float horizontalMaxSpeed;
     private bool isDashing;
 
-    private bool isJumpButtonHold = false;
+    private bool isJumpButtonHold;
 
     private Vector2 speed;
+    private Vector2 movementBuffer;
 
     private BoxCollider2D playerCollider;
 
@@ -37,12 +38,14 @@ public class PlayerControler : MonoBehaviour
     {
         playerCollider = GetComponent<BoxCollider2D>();
         speed = new Vector2(0, 0);
+        movementBuffer = new Vector2(0, 0);
 
         isOnGround = false;
         platformFrictionCoeff = 1f;
         isOnWall = false;
         wallDirection = 0;
         nbJump = 0;
+        isJumpButtonHold = false;
     }
 
     // Update is called once per frame
@@ -143,6 +146,9 @@ public class PlayerControler : MonoBehaviour
         Vector2 deltaMovement = speed * Time.deltaTime;
 
         Vector2 newPosition = ProcessColisions(deltaMovement);
+
+        newPosition += movementBuffer;
+        movementBuffer = Vector2.zero;
 
         transform.position = new Vector3(newPosition.x, newPosition.y, 0);
 
@@ -261,5 +267,11 @@ public class PlayerControler : MonoBehaviour
             wallDirection = 0;
          
         }
+    }
+
+
+    public void SetMovementBuffer(Vector2 movement)
+    {
+        movementBuffer = movement;
     }
 }
