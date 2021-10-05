@@ -81,7 +81,7 @@ public class PlayerControler : MonoBehaviour
         }
 
         //jump
-        if (nbJump > 0 && Input.GetKeyDown(KeyCode.Space))
+        if (nbJump > 0 && Input.GetAxis("Jump") > 0)
         {
             if(isOnWall && !isOnGroud)
             {
