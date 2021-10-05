@@ -58,7 +58,7 @@ public class PlayerControler : MonoBehaviour
             }
             else if (isOnWall)
             {
-                acceleration.y *=  (platformFrictionCoeff * frictionAdjustementFactor * speed.y / mass);
+                acceleration.y +=  -(platformFrictionCoeff * frictionAdjustementFactor * speed.y / mass);
             }
             else
             {
@@ -82,7 +82,7 @@ public class PlayerControler : MonoBehaviour
         //jump
         if (nbJump > 0 && Input.GetKeyDown(KeyCode.Space))
         {
-            if(isOnWall)
+            if(isOnWall && !isOnGroud)
             {
                 speed.x = jumpSpeed * Mathf.Cos(Mathf.Deg2Rad * wallJumpAngleDeg) * wallDirection;
                 
