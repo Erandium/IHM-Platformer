@@ -114,12 +114,13 @@ public class PlayerControler : MonoBehaviour
                 nbJump--;
                 isJumpButtonHold = true;
             }
-            else
-            {
-                isJumpButtonHold = false;
-            }
+            
         }
 
+        else
+        {
+            isJumpButtonHold = false;
+        }
 
 
         Vector2 deltaMovement = speed * Time.deltaTime;
