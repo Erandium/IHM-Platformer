@@ -5,7 +5,8 @@ using UnityEngine;
 public class MovingPlatform : MonoBehaviour
 {
     [SerializeField] private float dragMargin;
-    [SerializeField] private BoxCollider2D platformCollider;
+    [SerializeField] private float upMovementExtra;
+    private BoxCollider2D platformCollider;
 
     private Vector2 previousPos;
     private Vector2 currentPos;
@@ -15,6 +16,7 @@ public class MovingPlatform : MonoBehaviour
     {
         previousPos = transform.localPosition;
         currentPos = previousPos;
+        platformCollider = GetComponent<BoxCollider2D>();
     }
 
     // Update is called once per frame
@@ -26,18 +28,21 @@ public class MovingPlatform : MonoBehaviour
         ContactFilter2D contactFilter = new ContactFilter2D();
 
         platformCollider.offset = new Vector2(0, dragMargin);
-        platformCollider.size = Vector2.one;
+        //platformCollider.size = Vector2.one;
 
         int a = platformCollider.OverlapCollider(contactFilter, platformColliders);
 
         if (a > 0)
         {
-            print(a);
             PlayerControler player = platformColliders[a-1].gameObject.GetComponent<PlayerControler>();
             if (player != null)
             {
-                print("drag player");
-                player.SetMovementBuffer(currentPos - previousPos);
+                Vector2 movement = currentPos - previousPos;
+                if(movement.y > 0)
+                {
+                    movement.y += upMovementExtra;
+                }
+                player.SetMovementBuffer(movement);
             }
         }
 
@@ -46,3 +51,5 @@ public class MovingPlatform : MonoBehaviour
         previousPos = currentPos;
     }
 }
+
+

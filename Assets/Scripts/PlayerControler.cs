@@ -154,6 +154,8 @@ public class PlayerControler : MonoBehaviour
 
         CheckGround();
         CheckWalls();
+        playerCollider.size = Vector2.one;
+        playerCollider.offset = Vector2.zero;
     }
 
 
