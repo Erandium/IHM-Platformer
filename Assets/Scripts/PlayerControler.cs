@@ -17,7 +17,7 @@ public class PlayerControler : MonoBehaviour
     [SerializeField] private float wallJumpAngleDeg;
     [SerializeField] private float dashDistance;
 
-    private bool isOnGroud;
+    private bool isOnGround;
     private float platformFrictionCoeff;
     private bool isOnWall;
     private int wallDirection;
@@ -35,7 +35,7 @@ public class PlayerControler : MonoBehaviour
         playerCollider = GetComponent<BoxCollider2D>();
         speed = new Vector2(0, 0);
 
-        isOnGroud = false;
+        isOnGround = false;
         platformFrictionCoeff = 1f;
         isOnWall = false;
         wallDirection = 0;
@@ -46,7 +46,7 @@ public class PlayerControler : MonoBehaviour
     void Update()
     {
 
-        if (Input.GetAxis("Sprint") > 0.5f)
+        if (isOnGround && Input.GetAxis("Sprint") > 0.5f)
         {
             horizontalMaxSpeed = sprintMaxSpeed;
         }
@@ -65,7 +65,7 @@ public class PlayerControler : MonoBehaviour
         {
             Vector2 acceleration = new Vector2(Input.GetAxis("Horizontal") * (horizontalForce / mass), -gravityAcceleration);
 
-            if (isOnGroud)
+            if (isOnGround)
             {
                 acceleration.x += -(platformFrictionCoeff * frictionAdjustementFactor * speed.x / mass);
                 acceleration.y = 0;
@@ -82,7 +82,7 @@ public class PlayerControler : MonoBehaviour
 
             speed += acceleration * Time.deltaTime;
 
-            if (isOnGroud)
+            if (isOnGround)
             {
                 speed.x = Mathf.Clamp(speed.x, -horizontalMaxSpeed, horizontalMaxSpeed);
             }
@@ -96,7 +96,7 @@ public class PlayerControler : MonoBehaviour
         //jump
         if (nbJump > 0 && Input.GetAxis("Jump") > 0)
         {
-            if(isOnWall && !isOnGroud)
+            if(isOnWall && !isOnGround)
             {
                 speed.x = jumpSpeed * Mathf.Cos(Mathf.Deg2Rad * wallJumpAngleDeg) * wallDirection;
                 
@@ -155,7 +155,7 @@ public class PlayerControler : MonoBehaviour
             {
                 if (deltaMovement.y < 0)
                 {
-                    isOnGroud = true;
+                    isOnGround = true;
                 }
                 deltaMovement.y = 0;
                 speed.y = 0;
@@ -185,13 +185,13 @@ public class PlayerControler : MonoBehaviour
 
         if (a > 0)
         {
-            isOnGroud = true;
+            isOnGround = true;
             nbJump = 2;
             platformFrictionCoeff = platformColliders[a - 1].gameObject.GetComponent<PlatformData>().frictionFactor;
         }
         else
         {
-            isOnGroud = false;
+            isOnGround = false;
         }
     }
 
