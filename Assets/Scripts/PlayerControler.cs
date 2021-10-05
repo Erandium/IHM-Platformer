@@ -20,6 +20,7 @@ public class PlayerControler : MonoBehaviour
     private bool isOnWall;
     private int wallDirection;
     private int nbJump;
+    private bool isInPlatform;
 
     private Vector2 speed;
 
@@ -115,31 +116,42 @@ public class PlayerControler : MonoBehaviour
         ContactFilter2D contactFilter = new ContactFilter2D();
 
         playerCollider.offset = new Vector2(deltaMovement.x, 0);
-        playerCollider.size = new Vector2(1f, 0.95f);
+        playerCollider.size = new Vector2(1f, 1 - detectionMargin);
 
         int a = playerCollider.OverlapCollider(contactFilter, platformColliders);
 
         if (a > 0)
         {
-            deltaMovement.x = 0;
-            speed.x = 0;
+            isInPlatform = isInPlatform || platformColliders[a - 1].gameObject.GetComponent<PlatformData>().isTraversable;
+            if (!isInPlatform)
+            {
+                deltaMovement.x = 0;
+                speed.x = 0;
+            }
         }
 
         playerCollider.offset = new Vector2(0, deltaMovement.y);
-        playerCollider.size = new Vector2(0.95f, 1f);
+        playerCollider.size = new Vector2(1 - detectionMargin, 1f);
 
         int b = playerCollider.OverlapCollider(contactFilter, platformColliders);
 
         if (b > 0)
         {
-
-            if (deltaMovement.y < 0)
+            isInPlatform = isInPlatform || (platformColliders[b - 1].gameObject.GetComponent<PlatformData>().isTraversable && deltaMovement.y > 0);
+            if (!isInPlatform)
             {
-                isOnGroud = true;
+                if (deltaMovement.y < 0)
+                {
+                    isOnGroud = true;
+                }
+                deltaMovement.y = 0;
+                speed.y = 0;
             }
-            print("duh");
-            deltaMovement.y = 0;
-            speed.y = 0;
+        }
+
+        if (a == 0 && b == 0)
+        {
+            isInPlatform = false;
         }
 
         Vector2 newPosition = new Vector2(transform.position.x, transform.position.y) + deltaMovement;
