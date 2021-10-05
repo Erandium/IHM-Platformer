@@ -58,7 +58,7 @@ public class PlayerControler : MonoBehaviour
             }
             else if (isOnWall)
             {
-                acceleration.y *= -(platformFrictionCoeff * frictionAdjustementFactor * speed.y / mass);
+                acceleration.y *=  (platformFrictionCoeff * frictionAdjustementFactor * speed.y / mass);
             }
             else
             {
