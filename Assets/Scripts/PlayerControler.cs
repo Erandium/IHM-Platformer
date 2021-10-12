@@ -22,8 +22,8 @@ public class PlayerControler : MonoBehaviour
     private bool isOnWall;
     private int wallDirection;
     private int nbJump;
-    private bool isInPlatform;
     private float horizontalMaxSpeed;
+    private bool isInPlatform;
     private bool isDashing;
 
     private bool isJumpButtonHold;
@@ -46,6 +46,7 @@ public class PlayerControler : MonoBehaviour
         wallDirection = 0;
         nbJump = 0;
         isJumpButtonHold = false;
+        isInPlatform = false;
     }
 
     // Update is called once per frame
@@ -167,27 +168,46 @@ public class PlayerControler : MonoBehaviour
         playerCollider.offset = new Vector2(deltaMovement.x, 0);
         playerCollider.size = new Vector2(1f, 1 - detectionMargin);
 
-        int a = playerCollider.OverlapCollider(contactFilter, platformColliders);
+        int horizontal = playerCollider.OverlapCollider(contactFilter, platformColliders);
 
-        if (a > 0)
+        if (horizontal > 0)
         {
-            isInPlatform = isInPlatform || platformColliders[a - 1].gameObject.GetComponent<PlatformData>().isTraversable;
-            if (!isInPlatform)
+            bool hitHorizontalRigidPlatform = false;
+            for (int i = 0; i < horizontal; i++)
+            {
+                hitHorizontalRigidPlatform = hitHorizontalRigidPlatform 
+                    || !platformColliders[i].gameObject.GetComponent<PlatformData>().isTraversable;
+            }
+            
+            if (hitHorizontalRigidPlatform)
             {
                 deltaMovement.x = 0;
                 speed.x = 0;
+            }
+            else
+            {
+                isInPlatform = true;
             }
         }
 
         playerCollider.offset = new Vector2(0, deltaMovement.y);
         playerCollider.size = new Vector2(1 - detectionMargin, 1f);
 
-        int b = playerCollider.OverlapCollider(contactFilter, platformColliders);
+        int vertical = playerCollider.OverlapCollider(contactFilter, platformColliders);
 
-        if (b > 0)
+        
+
+        if (vertical > 0)
         {
-            isInPlatform = isInPlatform || (platformColliders[b - 1].gameObject.GetComponent<PlatformData>().isTraversable && deltaMovement.y > 0);
-            if (!isInPlatform)
+            bool hitVerticalRigidPlatform = (deltaMovement.y < 0 && !isInPlatform);
+
+            for (int i = 0; i < vertical; i++)
+            {
+                bool traversablePlatform = platformColliders[i].gameObject.GetComponent<PlatformData>().isTraversable;
+                hitVerticalRigidPlatform = hitVerticalRigidPlatform || !traversablePlatform;
+            }
+
+            if (hitVerticalRigidPlatform)
             {
                 if (deltaMovement.y < 0)
                 {
@@ -196,9 +216,13 @@ public class PlayerControler : MonoBehaviour
                 deltaMovement.y = 0;
                 speed.y = 0;
             }
+            else
+            {
+                isInPlatform = true;
+            }
         }
-
-        if (a == 0 && b == 0)
+        
+        if(horizontal == 0 && vertical == 0)
         {
             isInPlatform = false;
         }
