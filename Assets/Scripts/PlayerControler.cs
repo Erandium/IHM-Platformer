@@ -92,12 +92,12 @@ public class PlayerControler : MonoBehaviour
         {
             Vector2 acceleration = new Vector2(Input.GetAxis("Horizontal") * (horizontalForce / mass), -gravityAcceleration);
 
-            if (isOnGround)
+            if (isOnGround && !isInPlatform)
             {
                 acceleration.x += -(platformFrictionCoeff * frictionAdjustementFactor * speed.x / mass);
                 acceleration.y = 0;
             }
-            else if (isOnWall)
+            else if (isOnWall && !isInPlatform)
             {
                 acceleration.y += -(platformFrictionCoeff * frictionAdjustementFactor * speed.y / mass);
             }
