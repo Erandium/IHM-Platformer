@@ -800,6 +800,22 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 63583723391887573, guid: f440a6144f67b7e4bb0d1ae29069b525, type: 3}
+      propertyPath: lengthInSec
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 63583723391887573, guid: f440a6144f67b7e4bb0d1ae29069b525, type: 3}
+      propertyPath: playOnAwake
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 63583723391887573, guid: f440a6144f67b7e4bb0d1ae29069b525, type: 3}
+      propertyPath: InitialModule.startLifetime.scalar
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 63583723391887573, guid: f440a6144f67b7e4bb0d1ae29069b525, type: 3}
+      propertyPath: InitialModule.gravityModifier.scalar
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 539373495984188057, guid: f440a6144f67b7e4bb0d1ae29069b525, type: 3}
       propertyPath: m_RootOrder
       value: 0
