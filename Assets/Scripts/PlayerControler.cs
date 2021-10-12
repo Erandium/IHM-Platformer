@@ -18,8 +18,10 @@ public class PlayerControler : MonoBehaviour
     [SerializeField] private float dashDistance;
 
     private SpriteRenderer spriteRenderer;
+    private ParticleSystem particleSystem;
 
     private bool isOnGround;
+    private bool wasOnGround;
     private float platformFrictionCoeff;
     private bool isOnWall;
     private int wallDirection;
@@ -43,6 +45,7 @@ public class PlayerControler : MonoBehaviour
         movementBuffer = new Vector2(0, 0);
 
         spriteRenderer = GetComponent<SpriteRenderer>();
+        particleSystem = GetComponent<ParticleSystem>();
 
         isOnGround = false;
         platformFrictionCoeff = 1f;
@@ -51,12 +54,23 @@ public class PlayerControler : MonoBehaviour
         nbJump = 0;
         isJumpButtonHold = false;
         isInPlatform = false;
+        wasOnGround = false;
     }
 
     // Update is called once per frame
     void Update()
     {
+        if(isOnGround && !wasOnGround)
+        {
+            particleSystem.Play();
+            wasOnGround = true;
+        }
 
+        if (!isOnGround)
+        {
+            wasOnGround = false;
+        }
+        
         if (isOnGround && Input.GetAxis("Sprint") > 0.5f)
         {
             horizontalMaxSpeed = sprintMaxSpeed;
@@ -150,13 +164,17 @@ public class PlayerControler : MonoBehaviour
         playerCollider.size = Vector2.one;
         playerCollider.offset = Vector2.zero;
 
-        if (nbJump == 0)
+        switch (nbJump)
         {
-            spriteRenderer.color = Color.red;
-        }
-        else
-        {
-            spriteRenderer.color = Color.green;
+            case 0:
+                spriteRenderer.color = Color.red;
+                break;
+            case 1:
+                spriteRenderer.color = Color.yellow;
+                break;
+            default:
+                spriteRenderer.color = Color.green;
+                break;
         }
         SpeedDeformation(speed);
     }
