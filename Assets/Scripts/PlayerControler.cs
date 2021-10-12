@@ -18,7 +18,8 @@ public class PlayerControler : MonoBehaviour
     [SerializeField] private float dashDistance;
 
     private SpriteRenderer spriteRenderer;
-    private ParticleSystem particleSystem;
+    private ParticleSystem groundParticleSystem;
+    private ParticleSystem wallParticleSystem;
 
     private bool isOnGround;
     private bool wasOnGround;
@@ -45,7 +46,8 @@ public class PlayerControler : MonoBehaviour
         movementBuffer = new Vector2(0, 0);
 
         spriteRenderer = GetComponent<SpriteRenderer>();
-        particleSystem = GetComponent<ParticleSystem>();
+        groundParticleSystem = transform.Find("GroundParticles").gameObject.GetComponent<ParticleSystem>();
+        wallParticleSystem = transform.Find("WallParticles").gameObject.GetComponent<ParticleSystem>();
 
         isOnGround = false;
         platformFrictionCoeff = 1f;
@@ -62,13 +64,21 @@ public class PlayerControler : MonoBehaviour
     {
         if(isOnGround && !wasOnGround)
         {
-            particleSystem.Play();
+            groundParticleSystem.Play();
             wasOnGround = true;
         }
 
         if (!isOnGround)
         {
             wasOnGround = false;
+        }
+
+        if (isOnWall && speed.y < 0)
+        {
+            wallParticleSystem.Play();
+        }
+        {
+
         }
         
         if (isOnGround && Input.GetAxis("Sprint") > 0.5f)
