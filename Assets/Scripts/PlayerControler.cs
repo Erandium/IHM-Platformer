@@ -17,6 +17,8 @@ public class PlayerControler : MonoBehaviour
     [SerializeField] private float wallJumpAngleDeg;
     [SerializeField] private float dashDistance;
 
+    private SpriteRenderer spriteRenderer;
+
     private bool isOnGround;
     private float platformFrictionCoeff;
     private bool isOnWall;
@@ -40,6 +42,8 @@ public class PlayerControler : MonoBehaviour
         speed = new Vector2(0, 0);
         movementBuffer = new Vector2(0, 0);
 
+        spriteRenderer = GetComponent<SpriteRenderer>();
+
         isOnGround = false;
         platformFrictionCoeff = 1f;
         isOnWall = false;
@@ -60,75 +64,75 @@ public class PlayerControler : MonoBehaviour
         {
             horizontalMaxSpeed = walkMaxSpeed;
         }
-      
-        
 
 
-            if (mass == 0)
+
+
+        if (mass == 0)
+        {
+            speed.y -= gravityAcceleration * Time.deltaTime;
+            speed.x = Input.GetAxis("Horizontal") * horizontalMaxSpeed;
+        }
+        else
+        {
+            Vector2 acceleration = new Vector2(Input.GetAxis("Horizontal") * (horizontalForce / mass), -gravityAcceleration);
+
+            if (isOnGround)
             {
-                speed.y -= gravityAcceleration * Time.deltaTime;
-                speed.x = Input.GetAxis("Horizontal") * horizontalMaxSpeed;
+                acceleration.x += -(platformFrictionCoeff * frictionAdjustementFactor * speed.x / mass);
+                acceleration.y = 0;
+            }
+            else if (isOnWall)
+            {
+                acceleration.y += -(platformFrictionCoeff * frictionAdjustementFactor * speed.y / mass);
             }
             else
             {
-                Vector2 acceleration = new Vector2(Input.GetAxis("Horizontal") * (horizontalForce / mass), -gravityAcceleration);
-
-                if (isOnGround)
-                {
-                    acceleration.x += -(platformFrictionCoeff * frictionAdjustementFactor * speed.x / mass);
-                    acceleration.y = 0;
-                }
-                else if (isOnWall)
-                {
-                    acceleration.y += -(platformFrictionCoeff * frictionAdjustementFactor * speed.y / mass);
-                }
-                else
-                {
-                    acceleration.x *= airControlFactor;
-                }
-
-
-                speed += acceleration * Time.deltaTime;
-
-                if (isOnGround)
-                {
-                    speed.x = Mathf.Clamp(speed.x, -horizontalMaxSpeed, horizontalMaxSpeed);
-                }
-                else
-                {
-                    speed.x = Mathf.Clamp(speed.x, -horizontalMaxSpeed * airControlFactor, horizontalMaxSpeed * airControlFactor);
-                }
-
+                acceleration.x *= airControlFactor;
             }
 
-            //jump
-            if (nbJump > 0 && Input.GetAxis("Jump") > 0.5f)
+
+            speed += acceleration * Time.deltaTime;
+
+            if (isOnGround)
             {
-                if (!isJumpButtonHold)
-                {
-                    if (isOnWall && !isOnGround)
-                    {
-                        speed.x = jumpSpeed * Mathf.Cos(Mathf.Deg2Rad * wallJumpAngleDeg) * wallDirection;
-
-                        speed.y = jumpSpeed * Mathf.Sin(Mathf.Deg2Rad * wallJumpAngleDeg);
-                    }
-                    else
-                    {
-                        speed.y = jumpSpeed;
-                    }
-
-                    nbJump--;
-                    isJumpButtonHold = true;
-                }
-
+                speed.x = Mathf.Clamp(speed.x, -horizontalMaxSpeed, horizontalMaxSpeed);
             }
-
             else
             {
-                isJumpButtonHold = false;
+                speed.x = Mathf.Clamp(speed.x, -horizontalMaxSpeed * airControlFactor, horizontalMaxSpeed * airControlFactor);
             }
 
-        
+        }
+
+        //jump
+        if (nbJump > 0 && Input.GetAxis("Jump") > 0.5f)
+        {
+            if (!isJumpButtonHold)
+            {
+                if (isOnWall && !isOnGround)
+                {
+                    speed.x = jumpSpeed * Mathf.Cos(Mathf.Deg2Rad * wallJumpAngleDeg) * wallDirection;
+
+                    speed.y = jumpSpeed * Mathf.Sin(Mathf.Deg2Rad * wallJumpAngleDeg);
+                }
+                else
+                {
+                    speed.y = jumpSpeed;
+                }
+
+                nbJump--;
+                isJumpButtonHold = true;
+            }
+
+        }
+
+        else
+        {
+            isJumpButtonHold = false;
+        }
+
+
 
         Vector2 deltaMovement = speed * Time.deltaTime;
         deltaMovement += movementBuffer;
@@ -138,10 +142,22 @@ public class PlayerControler : MonoBehaviour
 
         transform.position = new Vector3(newPosition.x, newPosition.y, 0);
 
+        
+
         CheckGround();
         CheckWalls();
         playerCollider.size = Vector2.one;
         playerCollider.offset = Vector2.zero;
+
+        if (nbJump == 0)
+        {
+            spriteRenderer.color = Color.red;
+        }
+        else
+        {
+            spriteRenderer.color = Color.green;
+        }
+        SpeedDeformation(speed);
     }
 
 
@@ -199,9 +215,9 @@ public class PlayerControler : MonoBehaviour
         Collider2D[] platformColliders = new Collider2D[5];
         ContactFilter2D contactFilter = new ContactFilter2D();
 
-        playerCollider.size = new Vector2(0.5f  , 1f);
+        playerCollider.size = new Vector2(0.5f, 1f);
         playerCollider.offset = new Vector2(0, -detectionMargin);
-        
+
 
         int a = playerCollider.OverlapCollider(contactFilter, platformColliders);
 
@@ -226,7 +242,7 @@ public class PlayerControler : MonoBehaviour
         playerCollider.size = new Vector2(1f, 0.5f);
 
         // check left
-        playerCollider.offset = new Vector2(- detectionMargin, 0);
+        playerCollider.offset = new Vector2(-detectionMargin, 0);
 
         int left = playerCollider.OverlapCollider(contactFilter, platformCollidersLeft);
 
@@ -253,7 +269,7 @@ public class PlayerControler : MonoBehaviour
         {
             isOnWall = false;
             wallDirection = 0;
-         
+
         }
     }
 
@@ -261,5 +277,18 @@ public class PlayerControler : MonoBehaviour
     public void SetMovementBuffer(Vector2 movement)
     {
         movementBuffer = movement;
+    }
+
+    private void SpeedDeformation(Vector2 speed)
+    {
+        if (speed.x > walkMaxSpeed)
+        {
+            transform.localScale = new Vector3(0.7f + (0.3f * walkMaxSpeed / Mathf.Abs(speed.x)), 1, 1);
+        }
+        else
+        {
+            transform.localScale = new Vector3(1, 1, 1);
+        }
+        //transform.localScale
     }
 }
