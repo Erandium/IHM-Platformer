@@ -7,6 +7,7 @@ public class PlayerControler : MonoBehaviour
     [SerializeField] private float gravityAcceleration;
     [SerializeField] private float detectionMargin;
     [SerializeField] private float frictionAdjustementFactor;
+    [SerializeField] private int dashGranularity;
 
     [SerializeField] private float mass;
     [SerializeField] private float horizontalForce;
@@ -29,9 +30,11 @@ public class PlayerControler : MonoBehaviour
     private int nbJump;
     private float horizontalMaxSpeed;
     private bool isInPlatform;
+    private int nbDash;
     private bool isDashing;
 
     private bool isJumpButtonHold;
+    private bool isDashButtonHold;
 
     private Vector2 speed;
     private Vector2 movementBuffer;
@@ -55,6 +58,8 @@ public class PlayerControler : MonoBehaviour
         wallDirection = 0;
         nbJump = 0;
         isJumpButtonHold = false;
+        nbDash = 0;
+        isDashButtonHold = false;
         isInPlatform = false;
         wasOnGround = false;
     }
@@ -77,9 +82,7 @@ public class PlayerControler : MonoBehaviour
         {
             wallParticleSystem.Play();
         }
-        {
 
-        }
         
         if (isOnGround && Input.GetAxis("Sprint") > 0.5f)
         {
@@ -151,19 +154,33 @@ public class PlayerControler : MonoBehaviour
             }
 
         }
-
         else
         {
             isJumpButtonHold = false;
         }
 
-
-
+       
         Vector2 deltaMovement = speed * Time.deltaTime;
         deltaMovement += movementBuffer;
+        movementBuffer = Vector2.zero;
         Vector2 newPosition = ProcessColisions(deltaMovement);
 
-        movementBuffer = Vector2.zero;
+        
+        //dash
+        if (nbDash > 0 && Input.GetAxis("Dash") > 0.5f)
+        {
+            if (!isDashButtonHold)
+            {
+                Vector2 dashPosition = transform.position + Mathf.Sign(Input.GetAxis("Horizontal")) * dashDistance * Vector3.right;
+                newPosition = ProcessDash(dashPosition);
+                nbDash--;
+                isDashButtonHold = true;
+            }
+        }
+        else
+        {
+            isDashButtonHold = false;
+        }
 
         transform.position = new Vector3(newPosition.x, newPosition.y, 0);
 
@@ -262,6 +279,32 @@ public class PlayerControler : MonoBehaviour
         return newPosition;
     }
 
+    private Vector2 ProcessDash(Vector2 destination)
+    {
+        Vector2 start = transform.position;
+        Vector2 step = (destination - start) / dashGranularity;
+
+        Collider2D[] platformColliders = new Collider2D[5];
+        ContactFilter2D contactFilter = new ContactFilter2D();
+        playerCollider.size = new Vector2(1f, 1 - detectionMargin);
+
+        int stepIndex = 0;
+        for (int i = 1; i <= dashGranularity; i++)
+        {
+            playerCollider.offset = i * step;
+            int collision = playerCollider.OverlapCollider(contactFilter, platformColliders);
+            if (collision > 0)
+            {
+                stepIndex = i-1;
+                break;
+            }
+        }
+        playerCollider.offset = Vector2.zero;
+        playerCollider.size = Vector2.one;
+
+        return (start + stepIndex * step);
+    }
+
     private void CheckGround()
     {
         Collider2D[] platformColliders = new Collider2D[5];
@@ -277,6 +320,7 @@ public class PlayerControler : MonoBehaviour
         {
             isOnGround = true;
             nbJump = 2;
+            nbDash = 1;
             platformFrictionCoeff = platformColliders[a - 1].gameObject.GetComponent<PlatformData>().frictionFactor;
         }
         else
@@ -307,6 +351,7 @@ public class PlayerControler : MonoBehaviour
         {
             isOnWall = true;
             nbJump = 2;
+            nbDash = 1;
             wallDirection = 1;
             platformFrictionCoeff = platformCollidersLeft[left - 1].gameObject.GetComponent<PlatformData>().frictionFactor;
         }
@@ -314,6 +359,7 @@ public class PlayerControler : MonoBehaviour
         {
             isOnWall = true;
             nbJump = 2;
+            nbDash = 1;
             wallDirection = -1;
             platformFrictionCoeff = platformCollidersRight[right - 1].gameObject.GetComponent<PlatformData>().frictionFactor;
         }
