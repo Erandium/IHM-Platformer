@@ -5,8 +5,9 @@ using UnityEngine;
 public class CameraFollower : MonoBehaviour
 {
     private GameObject player;
-    [SerializeField] private float offset;
- 
+    [SerializeField] private float smoothTime = 0.3F;
+    
+    Vector3 velocity = Vector3.zero;
     // Start is called before the first frame update
     void Start()
     {
@@ -16,6 +17,7 @@ public class CameraFollower : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        transform.position = new Vector3(player.transform.position.x-offset,transform.position.y,transform.position.z);
+        Vector3 targetPosition = new Vector3(player.transform.position.x, player.transform.position.y, transform.position.z);
+        transform.position = Vector3.SmoothDamp(transform.position, targetPosition, ref velocity, smoothTime);
     }
 }
