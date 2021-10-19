@@ -862,7 +862,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 784804240200792775, guid: f440a6144f67b7e4bb0d1ae29069b525, type: 3}
       propertyPath: mass
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 784804240200792775, guid: f440a6144f67b7e4bb0d1ae29069b525, type: 3}
       propertyPath: sprintMaxSpeed
