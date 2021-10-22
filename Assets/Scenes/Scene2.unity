@@ -774,7 +774,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 5
+  orthographic size: 8.31127
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
@@ -798,7 +798,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1488223773}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 5, z: -10}
+  m_LocalPosition: {x: 1.37, y: 6.09, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -942,8 +942,12 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 2040443451396159339, guid: 85410ac36514c6d47add82348f723c4c, type: 3}
+      propertyPath: movementSpeed
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2040443451396159339, guid: 85410ac36514c6d47add82348f723c4c, type: 3}
       propertyPath: nodes.Array.size
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 2040443451396159339, guid: 85410ac36514c6d47add82348f723c4c, type: 3}
       propertyPath: nodes.Array.data[0].x
@@ -968,6 +972,14 @@ PrefabInstance:
     - target: {fileID: 2040443451396159339, guid: 85410ac36514c6d47add82348f723c4c, type: 3}
       propertyPath: nodes.Array.data[2].y
       value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 2040443451396159339, guid: 85410ac36514c6d47add82348f723c4c, type: 3}
+      propertyPath: nodes.Array.data[3].x
+      value: 47
+      objectReference: {fileID: 0}
+    - target: {fileID: 2040443451396159339, guid: 85410ac36514c6d47add82348f723c4c, type: 3}
+      propertyPath: nodes.Array.data[3].y
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 6178411324570406414, guid: 85410ac36514c6d47add82348f723c4c, type: 3}
       propertyPath: m_RootOrder
