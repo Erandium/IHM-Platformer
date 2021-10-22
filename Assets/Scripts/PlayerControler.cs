@@ -295,9 +295,9 @@ public class PlayerControler : MonoBehaviour
             int collision = playerCollider.OverlapCollider(contactFilter, platformColliders);
             if (collision > 0)
             {
-                stepIndex = i-1;
                 break;
             }
+            stepIndex = i;
         }
         playerCollider.offset = Vector2.zero;
         playerCollider.size = Vector2.one;

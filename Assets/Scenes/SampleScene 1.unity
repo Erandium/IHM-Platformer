@@ -866,7 +866,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 784804240200792775, guid: f440a6144f67b7e4bb0d1ae29069b525, type: 3}
       propertyPath: dashDistance
-      value: 3
+      value: 2.5
       objectReference: {fileID: 0}
     - target: {fileID: 784804240200792775, guid: f440a6144f67b7e4bb0d1ae29069b525, type: 3}
       propertyPath: sprintMaxSpeed
@@ -874,7 +874,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 784804240200792775, guid: f440a6144f67b7e4bb0d1ae29069b525, type: 3}
       propertyPath: dashGranularity
-      value: 5
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 3768181264915606198, guid: f440a6144f67b7e4bb0d1ae29069b525, type: 3}
       propertyPath: m_Name
