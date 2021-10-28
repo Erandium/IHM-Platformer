@@ -4816,9 +4816,10 @@ GameObject:
   - component: {fileID: 6046062416996608876}
   - component: {fileID: 784804240200792775}
   - component: {fileID: 4203185047826280149}
+  - component: {fileID: 8416284242882415905}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -4905,14 +4906,15 @@ MonoBehaviour:
   gravityAcceleration: 10
   detectionMargin: 0.01
   frictionAdjustementFactor: 1
+  dashGranularity: 0
   mass: 1
   horizontalForce: 10
-  walkMaxSpeed: 5
-  sprintMaxSpeed: 8
-  airControlFactor: 1
-  jumpSpeed: 10
+  walkMaxSpeed: 7
+  sprintMaxSpeed: 12
+  airControlFactor: 0.8
+  jumpSpeed: 7
   wallJumpAngleDeg: 45
-  dashDistance: 0
+  dashDistance: 2.5
 --- !u!61 &4203185047826280149
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -4939,6 +4941,19 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &8416284242882415905
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3768181264915606198}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b249053e135987e4e8c16d017a3550b6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  smoothTime: 0.3
 --- !u!1 &6832332499749035083
 GameObject:
   m_ObjectHideFlags: 0
