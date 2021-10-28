@@ -353,7 +353,10 @@ public class PlayerControler : MonoBehaviour
             nbJump = 2;
             nbDash = 1;
             wallDirection = 1;
-            platformFrictionCoeff = platformCollidersLeft[left - 1].gameObject.GetComponent<PlatformData>().frictionFactor;
+            if (gameObject.GetComponent<PlatformData>() != null)
+            {
+                platformFrictionCoeff = platformCollidersLeft[left - 1].gameObject.GetComponent<PlatformData>().frictionFactor;
+            }
         }
         else if (right > 0)
         {
@@ -361,7 +364,10 @@ public class PlayerControler : MonoBehaviour
             nbJump = 2;
             nbDash = 1;
             wallDirection = -1;
-            platformFrictionCoeff = platformCollidersRight[right - 1].gameObject.GetComponent<PlatformData>().frictionFactor;
+            if (gameObject.GetComponent<PlatformData>() != null)
+            {
+                platformFrictionCoeff = platformCollidersRight[right - 1].gameObject.GetComponent<PlatformData>().frictionFactor;
+            }
         }
         else
         {
