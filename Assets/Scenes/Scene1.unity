@@ -1434,8 +1434,24 @@ PrefabInstance:
       value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 784804240200792775, guid: f440a6144f67b7e4bb0d1ae29069b525, type: 3}
+      propertyPath: dashNumber
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 784804240200792775, guid: f440a6144f67b7e4bb0d1ae29069b525, type: 3}
+      propertyPath: jumpNumber
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 784804240200792775, guid: f440a6144f67b7e4bb0d1ae29069b525, type: 3}
+      propertyPath: dashCooldown
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 784804240200792775, guid: f440a6144f67b7e4bb0d1ae29069b525, type: 3}
       propertyPath: dashDistance
-      value: 2.5
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 784804240200792775, guid: f440a6144f67b7e4bb0d1ae29069b525, type: 3}
+      propertyPath: dashDuration
+      value: 0.2
       objectReference: {fileID: 0}
     - target: {fileID: 784804240200792775, guid: f440a6144f67b7e4bb0d1ae29069b525, type: 3}
       propertyPath: sprintMaxSpeed

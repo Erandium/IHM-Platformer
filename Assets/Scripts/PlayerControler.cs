@@ -15,11 +15,13 @@ public class PlayerControler : MonoBehaviour
     [SerializeField] private float sprintMaxSpeed;
     [SerializeField] private float airControlFactor;
     [SerializeField] private float jumpSpeed;
+    [SerializeField] private int jumpNumber;
     [SerializeField] private float wallJumpAngleDeg;
     [SerializeField] private float variableJumpFactor; // need to be < 1
     [SerializeField] private float dashDistance;
     [SerializeField] private float dashDuration;
     [SerializeField] private float dashCooldown;
+    [SerializeField] private int dashNumber;
 
     private SpriteRenderer spriteRenderer;
     private ParticleSystem groundParticleSystem;
@@ -37,6 +39,9 @@ public class PlayerControler : MonoBehaviour
     private bool isInPlatform;
     private int nbDash;
     private bool isDashing;
+    private float dashDirection;
+    private float dashTimer;
+    private float dashSpeed;
 
     private bool isJumpButtonHold;
     private bool isDashButtonHold;
@@ -63,17 +68,33 @@ public class PlayerControler : MonoBehaviour
         platformFrictionCoeff = 1f;
         isOnWall = false;
         wallDirection = 0;
+
         nbJump = 0;
         isJumpButtonHold = false;
-        nbDash = 0;
-        isDashButtonHold = false;
         isInPlatform = false;
         wasOnGround = false;
+
+        nbDash = 0;
+        isDashing = false;
+        dashDirection = 0;
+        dashTimer = 0;
+        dashSpeed = dashDistance / dashDuration;
+        isDashButtonHold = false;
     }
 
     // Update is called once per frame
     void Update()
     {
+
+        /* timers */
+        dashTimer += Time.deltaTime;
+
+
+
+        /* physics */
+
+        // state
+
         if(isOnGround && !wasOnGround)
         {
             groundParticleSystem.Play();
@@ -90,107 +111,131 @@ public class PlayerControler : MonoBehaviour
             wallParticleSystem.Play();
         }
 
-        
-        if (isOnGround && Input.GetAxis("Sprint") > 0.5f)
-        {
-            horizontalMaxSpeed = sprintMaxSpeed;
-        }
-        else
-        {
-            horizontalMaxSpeed = walkMaxSpeed;
-        }
 
 
-
-
-        if (mass == 0)
-        {
-            speed.y -= currGravityAcceleration * Time.deltaTime;
-            speed.x = Input.GetAxis("Horizontal") * horizontalMaxSpeed;
-        }
-        else
-        {
-            Vector2 acceleration = new Vector2(Input.GetAxis("Horizontal") * (horizontalForce / mass), -currGravityAcceleration);
-
-            if (isOnGround && !isInPlatform)
-            {
-                acceleration.x += -(platformFrictionCoeff * frictionAdjustementFactor * speed.x / mass);
-                acceleration.y = 0;
-            }
-            else if (isOnWall && !isInPlatform)
-            {
-                acceleration.y += -(platformFrictionCoeff * frictionAdjustementFactor * speed.y / mass);
-            }
-            else
-            {
-                acceleration.x *= airControlFactor;
-            }
-
-
-            speed += acceleration * Time.deltaTime;
-
-            if (isOnGround)
-            {
-                speed.x = Mathf.Clamp(speed.x, -horizontalMaxSpeed, horizontalMaxSpeed);
-            }
-            else
-            {
-                speed.x = Mathf.Clamp(speed.x, -horizontalMaxSpeed * airControlFactor, horizontalMaxSpeed * airControlFactor);
-            }
-
-        }
-
-        //jump
-        if (nbJump > 0 && Input.GetAxis("Jump") > 0.5f)
-        {
-            if (!isJumpButtonHold)
-            {
-                if (isOnWall && !isOnGround)
-                {
-                    speed.x = jumpSpeed * Mathf.Cos(Mathf.Deg2Rad * wallJumpAngleDeg) * wallDirection;
-
-                    speed.y = jumpSpeed * Mathf.Sin(Mathf.Deg2Rad * wallJumpAngleDeg);
-                }
-                else
-                {
-                    speed.y = jumpSpeed;
-                }
-
-                nbJump--;
-                isJumpButtonHold = true;
-                currGravityAcceleration = gravityAcceleration * variableJumpFactor;
-            }
-
-
-        }
-        else
-        {
-            isJumpButtonHold = false;
-            currGravityAcceleration = gravityAcceleration;
-        }
-
-       
-        Vector2 deltaMovement = speed * Time.deltaTime;
-        deltaMovement += movementBuffer;
-        movementBuffer = Vector2.zero;
-        Vector2 newPosition = ProcessColisions(deltaMovement);
-
-        
-        //dash
+        //dash detection
         if (nbDash > 0 && Input.GetAxis("Dash") > 0.5f)
         {
-            if (!isDashButtonHold)
+            if (!isDashButtonHold && !isDashing && dashTimer > dashCooldown)
             {
-                Vector2 dashPosition = transform.position + Mathf.Sign(Input.GetAxis("Horizontal")) * dashDistance * Vector3.right;
-                newPosition = ProcessDash(dashPosition);
+                isDashing = true;
                 nbDash--;
                 isDashButtonHold = true;
+                dashTimer = 0;
+                dashDirection = Mathf.Sign(Input.GetAxis("Horizontal"));
             }
         }
         else
         {
             isDashButtonHold = false;
         }
+
+
+
+        Vector2 newPosition;
+
+        if(!isDashing)
+        {
+
+            // if not dashing, do the phisic normaly
+
+            // speed
+
+            if (isOnGround && Input.GetAxis("Sprint") > 0.5f)
+            {
+                horizontalMaxSpeed = sprintMaxSpeed;
+            }
+            else
+            {
+                horizontalMaxSpeed = walkMaxSpeed;
+            }
+
+            if (mass == 0)
+            {
+                speed.y -= currGravityAcceleration * Time.deltaTime;
+                speed.x = Input.GetAxis("Horizontal") * horizontalMaxSpeed;
+            }
+            else
+            {
+                Vector2 acceleration = new Vector2(Input.GetAxis("Horizontal") * (horizontalForce / mass), -currGravityAcceleration);
+
+                if (isOnGround && !isInPlatform)
+                {
+                    acceleration.x += -(platformFrictionCoeff * frictionAdjustementFactor * speed.x / mass);
+                    acceleration.y = 0;
+                }
+                else if (isOnWall && !isInPlatform)
+                {
+                    acceleration.y += -(platformFrictionCoeff * frictionAdjustementFactor * speed.y / mass);
+                }
+                else
+                {
+                    acceleration.x *= airControlFactor;
+                }
+
+
+                speed += acceleration * Time.deltaTime;
+
+                if (isOnGround)
+                {
+                    speed.x = Mathf.Clamp(speed.x, -horizontalMaxSpeed, horizontalMaxSpeed);
+                }
+                else
+                {
+                    speed.x = Mathf.Clamp(speed.x, -horizontalMaxSpeed * airControlFactor, horizontalMaxSpeed * airControlFactor);
+                }
+
+            }
+
+            //jump
+            if (nbJump > 0 && Input.GetAxis("Jump") > 0.5f)
+            {
+                if (!isJumpButtonHold)
+                {
+                    if (isOnWall && !isOnGround)
+                    {
+                        speed.x = jumpSpeed * Mathf.Cos(Mathf.Deg2Rad * wallJumpAngleDeg) * wallDirection;
+
+                        speed.y = jumpSpeed * Mathf.Sin(Mathf.Deg2Rad * wallJumpAngleDeg);
+                    }
+                    else
+                    {
+                        speed.y = jumpSpeed;
+                    }
+
+                    nbJump--;
+                    isJumpButtonHold = true;
+                    currGravityAcceleration = gravityAcceleration * variableJumpFactor;
+                }
+
+
+            }
+            else
+            {
+                isJumpButtonHold = false;
+                currGravityAcceleration = gravityAcceleration;
+            }
+
+           // movement
+
+            Vector2 deltaMovement = speed * Time.deltaTime;
+            deltaMovement += movementBuffer;
+            movementBuffer = Vector2.zero;
+            newPosition = ProcessColisions(deltaMovement);
+        
+        }
+        else
+        {
+            if (dashTimer > dashDuration)
+            {
+                isDashing = false;
+                print("dash timeout");
+            }
+            Vector2 deltaMovement = new Vector2(dashSpeed * dashDirection * Time.deltaTime, 0);
+            newPosition = ProcessDash(deltaMovement);
+        }
+
+        
 
         transform.position = new Vector3(newPosition.x, newPosition.y, 0);
 
@@ -200,6 +245,10 @@ public class PlayerControler : MonoBehaviour
         CheckWalls();
         playerCollider.size = Vector2.one;
         playerCollider.offset = Vector2.zero;
+
+
+
+        /* animation-debug */
 
         switch (nbJump)
         {
@@ -289,9 +338,10 @@ public class PlayerControler : MonoBehaviour
         return newPosition;
     }
 
-    private Vector2 ProcessDash(Vector2 destination)
+    private Vector2 ProcessDash(Vector2 deltaMovement)
     {
         Vector2 start = transform.position;
+        Vector2 destination = start + deltaMovement;
         Vector2 step = (destination - start) / dashGranularity;
 
         Collider2D[] platformColliders = new Collider2D[5];
@@ -305,6 +355,7 @@ public class PlayerControler : MonoBehaviour
             int collision = playerCollider.OverlapCollider(contactFilter, platformColliders);
             if (collision > 0)
             {
+                isDashing = false;
                 break;
             }
             stepIndex = i;
@@ -329,8 +380,8 @@ public class PlayerControler : MonoBehaviour
         if (a > 0)
         {
             isOnGround = true;
-            nbJump = 2;
-            nbDash = 1;
+            nbJump = jumpNumber;
+            nbDash = dashNumber;
             platformFrictionCoeff = platformColliders[a - 1].gameObject.GetComponent<PlatformData>().frictionFactor;
         }
         else
@@ -360,8 +411,8 @@ public class PlayerControler : MonoBehaviour
         if (left > 0)
         {
             isOnWall = true;
-            nbJump = 2;
-            nbDash = 1;
+            nbJump = jumpNumber;
+            nbDash = dashNumber;
             wallDirection = 1;
             if (gameObject.GetComponent<PlatformData>() != null)
             {
@@ -371,8 +422,8 @@ public class PlayerControler : MonoBehaviour
         else if (right > 0)
         {
             isOnWall = true;
-            nbJump = 2;
-            nbDash = 1;
+            nbJump = jumpNumber;
+            nbDash = dashNumber;
             wallDirection = -1;
             if (gameObject.GetComponent<PlatformData>() != null)
             {

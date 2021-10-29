@@ -4906,15 +4906,20 @@ MonoBehaviour:
   gravityAcceleration: 10
   detectionMargin: 0.01
   frictionAdjustementFactor: 1
-  dashGranularity: 0
-  mass: 1
+  dashGranularity: 10
+  mass: 0
   horizontalForce: 10
   walkMaxSpeed: 7
-  sprintMaxSpeed: 12
+  sprintMaxSpeed: 15
   airControlFactor: 0.8
-  jumpSpeed: 7
+  jumpSpeed: 9
+  jumpNumber: 2
   wallJumpAngleDeg: 45
-  dashDistance: 2.5
+  variableJumpFactor: 0.7
+  dashDistance: 5
+  dashDuration: 0.2
+  dashCooldown: 1
+  dashNumber: 2
 --- !u!61 &4203185047826280149
 BoxCollider2D:
   m_ObjectHideFlags: 0
