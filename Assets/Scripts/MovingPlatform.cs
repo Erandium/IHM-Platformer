@@ -34,7 +34,7 @@ public class MovingPlatform : MonoBehaviour
 
         if (a > 0)
         {
-            PlayerControler player = platformColliders[a-1].gameObject.GetComponent<PlayerControler>();
+            PlayerControler player = platformColliders[0].gameObject.GetComponent<PlayerControler>();
             if (player != null)
             {
                 Vector2 movement = currentPos - previousPos;
@@ -42,7 +42,7 @@ public class MovingPlatform : MonoBehaviour
                 {
                     movement.y += upMovementExtra;
                 }
-                player.SetMovementBuffer(currentPos - previousPos);
+                player.SetMovementBuffer(movement);
             }
         }
 

@@ -16,11 +16,16 @@ public class PlayerControler : MonoBehaviour
     [SerializeField] private float airControlFactor;
     [SerializeField] private float jumpSpeed;
     [SerializeField] private float wallJumpAngleDeg;
+    [SerializeField] private float variableJumpFactor; // need to be < 1
     [SerializeField] private float dashDistance;
+    [SerializeField] private float dashDuration;
+    [SerializeField] private float dashCooldown;
 
     private SpriteRenderer spriteRenderer;
     private ParticleSystem groundParticleSystem;
     private ParticleSystem wallParticleSystem;
+
+    private float currGravityAcceleration;
 
     private bool isOnGround;
     private bool wasOnGround;
@@ -51,6 +56,8 @@ public class PlayerControler : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         groundParticleSystem = transform.Find("GroundParticles").gameObject.GetComponent<ParticleSystem>();
         wallParticleSystem = transform.Find("WallParticles").gameObject.GetComponent<ParticleSystem>();
+
+        currGravityAcceleration = gravityAcceleration;
 
         isOnGround = false;
         platformFrictionCoeff = 1f;
@@ -98,12 +105,12 @@ public class PlayerControler : MonoBehaviour
 
         if (mass == 0)
         {
-            speed.y -= gravityAcceleration * Time.deltaTime;
+            speed.y -= currGravityAcceleration * Time.deltaTime;
             speed.x = Input.GetAxis("Horizontal") * horizontalMaxSpeed;
         }
         else
         {
-            Vector2 acceleration = new Vector2(Input.GetAxis("Horizontal") * (horizontalForce / mass), -gravityAcceleration);
+            Vector2 acceleration = new Vector2(Input.GetAxis("Horizontal") * (horizontalForce / mass), -currGravityAcceleration);
 
             if (isOnGround && !isInPlatform)
             {
@@ -151,12 +158,15 @@ public class PlayerControler : MonoBehaviour
 
                 nbJump--;
                 isJumpButtonHold = true;
+                currGravityAcceleration = gravityAcceleration * variableJumpFactor;
             }
+
 
         }
         else
         {
             isJumpButtonHold = false;
+            currGravityAcceleration = gravityAcceleration;
         }
 
        
@@ -381,6 +391,11 @@ public class PlayerControler : MonoBehaviour
     public void SetMovementBuffer(Vector2 movement)
     {
         movementBuffer = movement;
+    }
+
+    public void SetSpeed(Vector2 newSpeed)
+    {
+        speed = newSpeed;
     }
 
     private void SpeedDeformation(Vector2 speed)

@@ -23,6 +23,7 @@ public class RespawnFromFall : MonoBehaviour
         if (a > 0)
         {
             player.transform.position = this.gameObject.transform.GetChild(0).transform.position;
+            player.GetComponent<PlayerControler>().SetSpeed(Vector2.zero);
         }
     }
 
