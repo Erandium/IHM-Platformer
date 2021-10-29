@@ -216,6 +216,12 @@ public class PlayerControler : MonoBehaviour
                 currGravityAcceleration = gravityAcceleration;
             }
 
+            if (gravityAcceleration != currGravityAcceleration && speed.y < 0)
+            {
+                // on remet une gravité normale quand on retombe
+                currGravityAcceleration = gravityAcceleration;
+            }
+
            // movement
 
             Vector2 deltaMovement = speed * Time.deltaTime;
