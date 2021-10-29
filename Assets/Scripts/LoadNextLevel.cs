@@ -20,9 +20,13 @@ public class LoadNextLevel : MonoBehaviour
 
         int a = loadPointCollider.OverlapCollider(contactFilter, platformColliders);
 
-        if (a > 0)
+        for (int i = 0; i < a; i++)
         {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+            PlayerControler player = platformColliders[i].gameObject.GetComponent<PlayerControler>();
+            if (player != null)
+            {
+                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+            }
         }
     }
 }

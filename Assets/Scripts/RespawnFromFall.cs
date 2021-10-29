@@ -5,11 +5,9 @@ using UnityEngine;
 public class RespawnFromFall : MonoBehaviour
 {
     private BoxCollider2D collider;
-    private GameObject player;
     void Start()
     {
         collider = GetComponent<BoxCollider2D>();
-        player = GameObject.FindGameObjectWithTag("Player");
     }
 
     // Update is called once per frame
@@ -20,10 +18,14 @@ public class RespawnFromFall : MonoBehaviour
 
         int a = collider.OverlapCollider(contactFilter, platformColliders);
 
-        if (a > 0)
+        for (int i = 0; i < a; i++)
         {
-            player.transform.position = this.gameObject.transform.GetChild(0).transform.position;
-            player.GetComponent<PlayerControler>().SetSpeed(Vector2.zero);
+            PlayerControler player = platformColliders[i].gameObject.GetComponent<PlayerControler>();
+            if (player != null)
+            {
+                player.gameObject.transform.position = this.gameObject.transform.GetChild(0).transform.position;
+                player.SetSpeed(Vector2.zero);
+            }
         }
     }
 
