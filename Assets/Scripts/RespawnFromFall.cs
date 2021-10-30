@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class RespawnFromFall : MonoBehaviour
 {
-    private BoxCollider2D collider;
+    private BoxCollider2D fallCollider;
     void Start()
     {
-        collider = GetComponent<BoxCollider2D>();
+        fallCollider = GetComponent<BoxCollider2D>();
     }
 
     // Update is called once per frame
@@ -16,7 +16,7 @@ public class RespawnFromFall : MonoBehaviour
         Collider2D[] platformColliders = new Collider2D[5];
         ContactFilter2D contactFilter = new ContactFilter2D();
 
-        int a = collider.OverlapCollider(contactFilter, platformColliders);
+        int a = fallCollider.OverlapCollider(contactFilter, platformColliders);
 
         for (int i = 0; i < a; i++)
         {

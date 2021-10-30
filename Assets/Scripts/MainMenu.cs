@@ -13,4 +13,6 @@ public class MainMenu : MonoBehaviour
     {
         SceneManager.LoadScene("Scene1");
     }
+
+    
 }

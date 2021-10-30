@@ -23,9 +23,80 @@ public class PlayerControler : MonoBehaviour
     [SerializeField] private float dashCooldown;
     [SerializeField] private int dashNumber;
 
+    public void setGravity(float truc)
+    {
+        gravityAcceleration = truc;
+    }
+    public void setDetectionMargin(float truc)
+    {
+        gravityAcceleration = truc;
+    }
+    public void setFrictionAdjustmentFactor(float truc)
+    {
+        frictionAdjustementFactor = truc;
+    }
+    public void setDashGranularity(int truc)
+    {
+        dashGranularity = truc;
+    }
+    public void setMass(float truc)
+    {
+        mass = truc;
+    }
+    public void setHorizontalForce(float truc)
+    {
+        horizontalForce = truc;
+    }
+    public void setWalkMaxSpeed(float truc)
+    {
+        walkMaxSpeed = truc;
+    }
+    public void setSprintMaxSpeed(float truc)
+    {
+        sprintMaxSpeed = truc;
+    }
+    public void setAirControlFactor(float truc)
+    {
+        airControlFactor = truc;
+    }
+    public void setJumpSpeed(float truc)
+    {
+        jumpSpeed = truc;
+    }
+    public void setJumpNumber(int truc)
+    {
+        jumpNumber = truc;
+    }
+    public void setWallJumpAngleDegre(float truc)
+    {
+        wallJumpAngleDeg = truc;
+    }
+    public void setVariableJumpFactor(float truc)
+    {
+        variableJumpFactor = truc;
+    }
+    public void setDashDistance(float truc)
+    {
+        dashDistance = truc;
+    }
+    public void setDashCooldown(float truc)
+    {
+        dashCooldown = truc;
+    }
+    public void setDashDuration(float truc)
+    {
+        dashDuration = truc;
+    }
+    public void setDashNumber(int truc)
+    {
+        dashNumber = truc;
+    }
+
+
     private SpriteRenderer spriteRenderer;
     private ParticleSystem groundParticleSystem;
-    private ParticleSystem wallParticleSystem;
+    private ParticleSystem wallParticleSystemLeft;
+    private ParticleSystem wallParticleSystemRight;
 
     private float currGravityAcceleration;
 
@@ -60,8 +131,8 @@ public class PlayerControler : MonoBehaviour
 
         spriteRenderer = GetComponent<SpriteRenderer>();
         groundParticleSystem = transform.Find("GroundParticles").gameObject.GetComponent<ParticleSystem>();
-        wallParticleSystem = transform.Find("WallParticles").gameObject.GetComponent<ParticleSystem>();
-
+        wallParticleSystemLeft = transform.Find("WallParticlesLeft").gameObject.GetComponent<ParticleSystem>();
+        wallParticleSystemRight = transform.Find("WallParticlesRight").gameObject.GetComponent<ParticleSystem>();
         currGravityAcceleration = gravityAcceleration;
 
         isOnGround = false;
@@ -108,7 +179,14 @@ public class PlayerControler : MonoBehaviour
 
         if (isOnWall && speed.y < 0)
         {
-            wallParticleSystem.Play();
+            if (wallDirection == 1)
+            {
+                wallParticleSystemLeft.Play();
+            }
+            else if (wallDirection == -1)
+            {
+                wallParticleSystemRight.Play();
+            }
         }
 
 
