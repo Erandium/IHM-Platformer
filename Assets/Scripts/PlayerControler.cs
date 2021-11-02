@@ -122,6 +122,11 @@ public class PlayerControler : MonoBehaviour
 
     private BoxCollider2D playerCollider;
 
+    private GameObject spawnPoint;
+    private void Awake()
+    {
+        DontDestroyOnLoad(this.gameObject);
+    }
     // Start is called before the first frame update
     void Start()
     {
@@ -151,6 +156,9 @@ public class PlayerControler : MonoBehaviour
         dashTimer = 0;
         dashSpeed = dashDistance / dashDuration;
         isDashButtonHold = false;
+
+        spawnPoint = GameObject.FindGameObjectWithTag("SpawnPoint");
+        transform.position = spawnPoint.transform.position;
     }
 
     // Update is called once per frame
