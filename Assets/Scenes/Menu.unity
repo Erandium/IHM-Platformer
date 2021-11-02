@@ -1448,6 +1448,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3556525368250550058, guid: f440a6144f67b7e4bb0d1ae29069b525, type: 3}
+      propertyPath: mass
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3556525368250550058, guid: f440a6144f67b7e4bb0d1ae29069b525, type: 3}
+      propertyPath: gravityAcceleration
+      value: 15
+      objectReference: {fileID: 0}
     - target: {fileID: 5875939967939419712, guid: f440a6144f67b7e4bb0d1ae29069b525, type: 3}
       propertyPath: m_RootOrder
       value: 3
@@ -1584,6 +1592,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 4129501565663416153, guid: 94d59b1aaf6a3c049aa9bb3ec4c0326c, type: 3}
+      propertyPath: m_Alpha
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4129501565663416155, guid: 94d59b1aaf6a3c049aa9bb3ec4c0326c, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -1671,6 +1683,14 @@ PrefabInstance:
     - target: {fileID: 4129501565663416167, guid: 94d59b1aaf6a3c049aa9bb3ec4c0326c, type: 3}
       propertyPath: m_Name
       value: Canvas
+      objectReference: {fileID: 0}
+    - target: {fileID: 4129501566448815189, guid: 94d59b1aaf6a3c049aa9bb3ec4c0326c, type: 3}
+      propertyPath: m_Text
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 4129501566840139524, guid: 94d59b1aaf6a3c049aa9bb3ec4c0326c, type: 3}
+      propertyPath: m_Text
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 94d59b1aaf6a3c049aa9bb3ec4c0326c, type: 3}

@@ -35,7 +35,7 @@ public class CanvasScript : MonoBehaviour
     {
         player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerControler>();
         canvasGroup = GetComponent<CanvasGroup>();
-        isHidden = false;
+        isHidden = true;
     }
 
     private void Update()
